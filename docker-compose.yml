@@ -1,0 +1,28 @@
+version: "3"
+services:
+  reverse-proxy:
+    image: traefik:v2.9
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --api.insecure=true --providers.docker
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # App runner
+  bsns_hms:
+    build: ./
+    labels:
+      - "traefik.http.routers.bsns_hms.rule=Host(`medhead.localhost`) && PathPrefix(`/hms`)"
+      - "traefik.http.routers.bsns_hms.middlewares=hms-stripprefix"
+      - "traefik.http.middlewares.hms-stripprefix.stripprefix.prefixes=/hms"
+      - "traefik.http.services.bsns_hms.loadbalancer.server.port=8080"
+
+  # Redis dependency
+  redis:
+    image: redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./:/app
