@@ -11,8 +11,8 @@
 
 	<!-- PROPERTIES  -->
 	<properties>
-		<!--À configurer pour chaque micro-services -->
-		<service.version>1.0.0</service.version>
+		<!--À configurer pour chaque micro-service -->
+		<revision>1.0.0</revision>
 		<service.artifactid>bsns_hms</service.artifactid>
 		<service.github.package.url>https://maven.pkg.github.com/medhead-ers/bsns-hms</service.github.package.url>
 
@@ -25,7 +25,7 @@
 	<!-- PROJECT DESCRIPTION-->
 	<groupId>com.medhead.ers</groupId>
 	<artifactId>${service.artifactid}</artifactId>
-	<version>${service.version}}</version>
+	<version>${revision}</version>
 	<name>${service.artifactid}</name>
 
 	<!-- PACKAGE DEPLOYMENT -->
@@ -115,6 +115,9 @@
 						<configuration>
 							<excludes>
 								<exclude>com/medhead/ers/*/*Application.class</exclude>
+								<!-- Exclude messaging when not used in app to avoid wrong metrics -->
+								<exclude>com/medhead/ers/*/application/messaging/**</exclude>
+								<exclude>com/medhead/ers/*/application/advice/MessagePublicationFailAdvice.*</exclude>
 							</excludes>
 						</configuration>
 						<executions>
