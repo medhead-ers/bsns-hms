@@ -1,8 +1,11 @@
 package com.medhead.ers.bsns_hms.application.controller;
 
+import com.medhead.ers.bsns_hms.domain.entity.EmergencyBedroom;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
 
+import com.medhead.ers.bsns_hms.domain.exception.HospitalCodeAlreadyExistException;
 import com.medhead.ers.bsns_hms.domain.service.definition.HospitalService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +30,13 @@ public class HospitalController {
 
     @PostMapping("/hospitals")
     @ResponseStatus(HttpStatus.CREATED)
-    Hospital newHospital(@RequestBody Hospital hospital) {
+    Hospital newHospital(@Valid @RequestBody Hospital hospital) throws HospitalCodeAlreadyExistException {
         return hospitalService.saveHospital(hospital);
+    }
+
+    @GetMapping("/hospitals/{uuid}/emergency-bedrooms")
+    List<EmergencyBedroom>  allEmergencyBedroomsOfHospital(@PathVariable UUID uuid) {
+        return hospitalService.getHospitalById(uuid).getBedrooms();
     }
 
 }
