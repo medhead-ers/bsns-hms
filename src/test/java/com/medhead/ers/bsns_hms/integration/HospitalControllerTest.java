@@ -2,10 +2,13 @@ package com.medhead.ers.bsns_hms.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medhead.ers.bsns_hms.data.repository.HospitalRepository;
+import com.medhead.ers.bsns_hms.data.tools.Generator;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
 import com.medhead.ers.bsns_hms.domain.valueObject.Address;
+import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;
 import com.medhead.ers.bsns_hms.domain.valueObject.GPSCoordinates;
 import com.medhead.ers.bsns_hms.domain.valueObject.MedicalSpeciality;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,7 +18,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -49,6 +51,7 @@ class HospitalControllerTest {
         // Then
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name", is(hospital.getName())))
+                .andExpect(jsonPath("$.code", is(hospital.getCode())))
                 .andExpect(jsonPath("$.address.numberAndStreetName", is(hospital.getAddress().getNumberAndStreetName())))
                 .andExpect(jsonPath("$.address.addressComplement", is(hospital.getAddress().getAddressComplement())))
                 .andExpect(jsonPath("$.address.city", is(hospital.getAddress().getCity())))
@@ -68,6 +71,7 @@ class HospitalControllerTest {
                 // Then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", is(hospital.getName())))
+                .andExpect(jsonPath("$.code", is(hospital.getCode())))
                 .andExpect(jsonPath("$.address.numberAndStreetName", is(hospital.getAddress().getNumberAndStreetName())))
                 .andExpect(jsonPath("$.address.addressComplement", is(hospital.getAddress().getAddressComplement())))
                 .andExpect(jsonPath("$.address.city", is(hospital.getAddress().getCity())))
@@ -98,10 +102,23 @@ class HospitalControllerTest {
                 .andExpect(jsonPath("$.size()", is(totalHospitalsInRepository)));
     }
 
+    @Test
+    void test_GetEmergencyBedroomsForHospitals() throws Exception {
+        // Given
+        Hospital testHospital = hospitalRepository.save(buildTestHospital());
+        int totalBedroomsInHospital = (int) testHospital.getBedrooms().stream().count();
+        // When
+        mockMvc.perform(get("/hospitals/"+testHospital.getId()+"/emergency-bedrooms"))
+        // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(totalBedroomsInHospital)));
+    }
+
     //------------------------------------------------------------------
-    public Hospital buildTestHospital() {
-        return Hospital.builder()
+    private Hospital buildTestHospital() {
+        Hospital testHospital =  Hospital.builder()
                 .name("Test Hospital")
+                .code(RandomStringUtils.randomAlphanumeric(5).toUpperCase())
                 .gpsCoordinates(GPSCoordinates.builder()
                         .latitude(50.51746719004866)
                         .longitude(-0.05958983237779776).build())
@@ -116,5 +133,12 @@ class HospitalControllerTest {
                         MedicalSpeciality.CARDIOLOGY,
                         MedicalSpeciality.OPHTHALMOLOGY)))
                 .build();
+
+        testHospital.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 10, BedroomState.AVAILABLE, 1));
+        testHospital.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 5, BedroomState.UNAVAILABLE, 20));
+
+        return testHospital;
     }
 }
