@@ -18,11 +18,11 @@ import java.util.HashSet;
 
 @SpringBootTest
 @DirtiesContext
-public class HospitalServiceTest {
+class HospitalServiceTest {
     @Autowired
     HospitalService hospitalService;
     @Test
-    public void test_twoHospitalWithSameCodeThrowsHospitalCodeAlreadyExistException() throws HospitalCodeAlreadyExistException {
+    void test_twoHospitalWithSameCodeThrowsHospitalCodeAlreadyExistException() throws HospitalCodeAlreadyExistException {
         // Given
         Hospital firstHospital = buildTestHospital(RandomStringUtils.randomAlphanumeric(5).toUpperCase());
         Hospital secondHospital = buildTestHospital(firstHospital.getCode());

@@ -15,9 +15,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class HospitalEntityTest {
+class HospitalEntityTest {
     @Test
-    public void test_AddAvailableEmergencyBedroomsToHospital() {
+    void test_AddAvailableEmergencyBedroomsToHospital() {
         // Given
         Hospital hospital = Hospital.builder()
                 .code(RandomStringUtils.randomAlphanumeric(5).toUpperCase())

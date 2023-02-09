@@ -7,7 +7,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract public class Generator {
+public class Generator {
+    private Generator(){}
+
     public static List<EmergencyBedroom> emergencyBedroomsGenerator(String hospitalCode, int nbOfEmergencyBedroomsToGenerate, BedroomState bedroomState, int startIndex) {
         ArrayList<EmergencyBedroom> emergencyBedroomsList = new ArrayList<>();
         for (int i = startIndex; i <= nbOfEmergencyBedroomsToGenerate + startIndex; i++) {
