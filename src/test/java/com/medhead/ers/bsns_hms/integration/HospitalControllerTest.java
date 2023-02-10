@@ -10,6 +10,8 @@ import com.medhead.ers.bsns_hms.domain.valueObject.GPSCoordinates;
 import com.medhead.ers.bsns_hms.domain.valueObject.MedicalSpeciality;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -103,15 +105,31 @@ class HospitalControllerTest {
     }
 
     @Test
-    void test_GetEmergencyBedroomsForHospitals() throws Exception {
+    void test_GetEmergencyBedroomsForHospital() throws Exception {
         // Given
         Hospital testHospital = hospitalRepository.save(buildTestHospital());
-        int totalBedroomsInHospital = (int) testHospital.getBedrooms().stream().count();
+        int totalBedroomsInHospital = (int) testHospital.getEmergencyBedrooms().stream().count();
         // When
         mockMvc.perform(get("/hospitals/"+testHospital.getId()+"/emergency-bedrooms"))
         // Then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(totalBedroomsInHospital)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {("available"),("occupied"),("unavailable")})
+    void test_FilterEmergencyBedroomsForHospital(String bedroomsState) throws Exception {
+        // Given
+        Hospital testHospital = hospitalRepository.save(buildTestHospital());
+        int totalBedroomsInState = (int) testHospital.getEmergencyBedrooms().stream().filter(
+                e-> e.getState() == BedroomState.valueOf(bedroomsState.toUpperCase())
+        ).count();
+
+        // When
+        mockMvc.perform(get("/hospitals/"+testHospital.getId()+"/emergency-bedrooms?state="+bedroomsState))
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(totalBedroomsInState)));
     }
 
     //------------------------------------------------------------------
@@ -138,6 +156,8 @@ class HospitalControllerTest {
                 Generator.emergencyBedroomsGenerator(testHospital.getCode(), 10, BedroomState.AVAILABLE, 1));
         testHospital.addEmergencyBedrooms(
                 Generator.emergencyBedroomsGenerator(testHospital.getCode(), 5, BedroomState.UNAVAILABLE, 20));
+        testHospital.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 4, BedroomState.OCCUPIED, 30));
 
         return testHospital;
     }
