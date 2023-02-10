@@ -11,10 +11,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Setter
 @Getter
@@ -47,17 +44,17 @@ public class Hospital {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonIgnore
-    private List<EmergencyBedroom> bedrooms;
+    private List<EmergencyBedroom> emergencyBedrooms;
 
     public void addEmergencyBedrooms(EmergencyBedroom emergencyBedroom) {
-        if (this.bedrooms == null)
-            this.bedrooms = new ArrayList<>();
-        this.bedrooms.add(emergencyBedroom);
+        if (this.emergencyBedrooms == null)
+            this.emergencyBedrooms = new ArrayList<>();
+        this.emergencyBedrooms.add(emergencyBedroom);
     }
 
     public void addEmergencyBedrooms(List<EmergencyBedroom> emergencyBedroomList) {
-        if (this.bedrooms == null)
-            this.bedrooms = new ArrayList<>();
-        this.bedrooms.addAll(emergencyBedroomList);
+        if (this.emergencyBedrooms == null)
+            this.emergencyBedrooms = new ArrayList<>();
+        this.emergencyBedrooms.addAll(emergencyBedroomList);
     }
 }

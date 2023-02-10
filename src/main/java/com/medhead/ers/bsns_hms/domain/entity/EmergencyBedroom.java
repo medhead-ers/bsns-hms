@@ -1,5 +1,6 @@
 package com.medhead.ers.bsns_hms.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -35,5 +36,6 @@ public class EmergencyBedroom {
     @Nullable
     private UUID emergencyId;
     @ManyToOne
+    @JsonIgnore
     private Hospital hospital;
 }
