@@ -2,21 +2,17 @@ package com.medhead.ers.bsns_hms.data.sample;
 
 import com.medhead.ers.bsns_hms.data.repository.HospitalRepository;
 import com.medhead.ers.bsns_hms.data.tools.Generator;
-import com.medhead.ers.bsns_hms.domain.entity.EmergencyBedroom;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
 import com.medhead.ers.bsns_hms.domain.valueObject.Address;
 import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;
 import com.medhead.ers.bsns_hms.domain.valueObject.GPSCoordinates;
 import com.medhead.ers.bsns_hms.domain.valueObject.MedicalSpeciality;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 
 @Configuration
 public class DataSampleLoader {

@@ -80,7 +80,8 @@ class HospitalControllerTest {
                 .andExpect(jsonPath("$.address.postCode", is(hospital.getAddress().getPostCode())))
                 .andExpect(jsonPath("$.address.country", is(hospital.getAddress().getCountry())))
                 .andExpect(jsonPath("$.gpsCoordinates.longitude").value(is(hospital.getGpsCoordinates().getLongitude()), Double.class))
-                .andExpect(jsonPath("$.gpsCoordinates.latitude").value(is(hospital.getGpsCoordinates().getLatitude()), Double.class));
+                .andExpect(jsonPath("$.gpsCoordinates.latitude").value(is(hospital.getGpsCoordinates().getLatitude()), Double.class))
+                .andExpect(jsonPath("$.availableEmergencyBedrooms", is(hospital.getAvailableEmergencyBedrooms())));
     }
 
     @Test

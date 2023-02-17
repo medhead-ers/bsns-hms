@@ -2,6 +2,7 @@ package com.medhead.ers.bsns_hms.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.medhead.ers.bsns_hms.domain.valueObject.Address;
+import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;
 import com.medhead.ers.bsns_hms.domain.valueObject.GPSCoordinates;
 import com.medhead.ers.bsns_hms.domain.valueObject.MedicalSpeciality;
 import jakarta.persistence.*;
@@ -44,7 +45,11 @@ public class Hospital {
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonIgnore
-    private List<EmergencyBedroom> emergencyBedrooms;
+    private List<EmergencyBedroom> emergencyBedrooms = new ArrayList<>();
+    @Transient
+    @Setter(AccessLevel.NONE)
+    private int availableEmergencyBedrooms;
+
 
     public void addEmergencyBedrooms(EmergencyBedroom emergencyBedroom) {
         if (this.emergencyBedrooms == null)
@@ -56,5 +61,11 @@ public class Hospital {
         if (this.emergencyBedrooms == null)
             this.emergencyBedrooms = new ArrayList<>();
         this.emergencyBedrooms.addAll(emergencyBedroomList);
+    }
+
+    public int getAvailableEmergencyBedrooms() {
+        return (int) this.emergencyBedrooms.stream()
+                .filter(emergencyBedroom -> emergencyBedroom.getState().equals(BedroomState.AVAILABLE))
+                .count();
     }
 }
