@@ -43,6 +43,7 @@ public class Hospital {
     private Set<MedicalSpeciality> medicalSpecialities;
     @OneToMany(
             cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
             orphanRemoval = true)
     @JsonIgnore
     private List<EmergencyBedroom> emergencyBedrooms = new ArrayList<>();

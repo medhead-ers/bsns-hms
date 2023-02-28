@@ -12,7 +12,7 @@ public class Generator {
 
     public static List<EmergencyBedroom> emergencyBedroomsGenerator(String hospitalCode, int nbOfEmergencyBedroomsToGenerate, BedroomState bedroomState, int startIndex) {
         ArrayList<EmergencyBedroom> emergencyBedroomsList = new ArrayList<>();
-        for (int i = startIndex; i <= nbOfEmergencyBedroomsToGenerate + startIndex; i++) {
+        for (int i = startIndex; i < nbOfEmergencyBedroomsToGenerate + startIndex; i++) {
             emergencyBedroomsList.add(EmergencyBedroom.builder()
                     .code(hospitalCode + "_EBR_" + StringUtils.left(String.format("%03d", i), 3))
                     .state(bedroomState)

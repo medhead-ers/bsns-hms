@@ -25,6 +25,7 @@ public class EmergencyBedroom {
     @Column(name = "id", columnDefinition = "VARCHAR(36)")
     private UUID id;
     @NotNull
+    @Setter(AccessLevel.NONE)
     @Enumerated(EnumType.STRING)
     private BedroomState state;
     @NotEmpty
@@ -32,10 +33,18 @@ public class EmergencyBedroom {
     @Pattern(regexp = "^[A-Z0-9]{5}_EBR_[0-9]{3}$")
     private String code;
     @Nullable
+    @Setter(AccessLevel.NONE)
     private UUID patientId;
     @Nullable
+    @Setter(AccessLevel.NONE)
     private UUID emergencyId;
     @ManyToOne
     @JsonIgnore
     private Hospital hospital;
+
+    public void book(UUID patientId, UUID emergencyId) {
+        this.state = BedroomState.OCCUPIED;
+        this.patientId = patientId;
+        this.emergencyId = emergencyId;
+    }
 }
