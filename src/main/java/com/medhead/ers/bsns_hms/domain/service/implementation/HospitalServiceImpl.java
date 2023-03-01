@@ -1,5 +1,8 @@
 package com.medhead.ers.bsns_hms.domain.service.implementation;
 
+import com.medhead.ers.bsns_hms.application.messaging.exception.MessagePublicationFailException;
+import com.medhead.ers.bsns_hms.application.messaging.message.factory.MessageFactory;
+import com.medhead.ers.bsns_hms.application.messaging.service.definition.MessagePublisher;
 import com.medhead.ers.bsns_hms.data.repository.HospitalRepository;
 import com.medhead.ers.bsns_hms.domain.NoEmergencyBedroomsAvailableInHospitalException;
 import com.medhead.ers.bsns_hms.domain.entity.EmergencyBedroom;
@@ -19,6 +22,9 @@ import java.util.UUID;
 public class HospitalServiceImpl implements HospitalService {
     @Autowired
     HospitalRepository hospitalRepository;
+    @Autowired
+    MessagePublisher messagePublisher;
+
     @Override
     public Hospital saveHospital(Hospital hospital) throws HospitalCodeAlreadyExistException {
         try {
@@ -40,7 +46,7 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public EmergencyBedroom bookEmergencyBedroom(UUID hospitalId, UUID emergencyId, UUID patientId) throws NoEmergencyBedroomsAvailableInHospitalException {
+    public EmergencyBedroom bookEmergencyBedroom(UUID hospitalId, UUID emergencyId, UUID patientId) throws NoEmergencyBedroomsAvailableInHospitalException, MessagePublicationFailException {
         Hospital hospital = getHospitalById(hospitalId);
         EmergencyBedroom emergencyBedroom = hospital.getEmergencyBedrooms().stream().filter(
                 eb -> eb.getState() == BedroomState.AVAILABLE
@@ -48,6 +54,7 @@ public class HospitalServiceImpl implements HospitalService {
 
         emergencyBedroom.book(patientId, emergencyId);
         hospitalRepository.save(hospital);
+        messagePublisher.publish(MessageFactory.createEmergencyBedroomBookedMessage(emergencyBedroom));
         return emergencyBedroom;
     }
 }

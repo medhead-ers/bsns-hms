@@ -1,5 +1,8 @@
 package com.medhead.ers.bsns_hms.application.messaging.redis.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.medhead.ers.bsns_hms.application.messaging.event.Event;
 import com.medhead.ers.bsns_hms.application.messaging.exception.CannotCreateEventFromJSONMessageException;
 import com.medhead.ers.bsns_hms.application.messaging.exception.CannotProcessJobException;
@@ -10,6 +13,9 @@ import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.IOException;
+import java.util.HashMap;
 
 @NoArgsConstructor
 public class MessageListener {
@@ -29,10 +35,22 @@ public class MessageListener {
         try {
             event = createEventFromMessage(message);
         } catch (CannotCreateEventFromJSONMessageException e) {
-            logger.info("Message reçu de type inconnu ou malformé (pas d'événement éligible associé). Le message sera ignoré.");
-            return;
+            try {
+                HashMap<String, Object> receivedMessage = (HashMap<String, Object>) new ObjectMapper().readValue(message, Object.class);
+                String eventType = (String) receivedMessage.get("eventType");
+                if (eventType == null) {
+                    throw new IOException();
+                }
+                    logger.info("Message reçu de type inconnu ("+eventType+") - Pas d'événement éligible associé. Le message sera ignoré.");
+                    return;
+            } catch (Exception ex) {
+                logger.info("Message malformé reçu. Le message sera ignoré.");
+                return;
+            }
         }
+
         logger.info("Message reçu de type : " + event.getEventType().toString());
+
         if(jobMapper.checkIfJobExistForEvent(event)) {
             try {
                 Job job = jobMapper.createJobFromEvent(event);
