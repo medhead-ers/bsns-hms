@@ -29,7 +29,7 @@ import static com.medhead.ers.bsns_hms.utils.FileReader.readFile;
 
 @DirtiesContext
 @ExtendWith(OutputCaptureExtension.class)
-public class EmergencyDispatchedJobProcessorTest extends TestWithRedis {
+class EmergencyDispatchedJobProcessorTest extends TestWithRedis {
 
     private final static String MOCK_MESSAGE_RESOURCES_PATH = "src/test/resources/mock/message/";
 
