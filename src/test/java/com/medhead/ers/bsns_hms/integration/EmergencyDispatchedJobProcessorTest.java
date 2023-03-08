@@ -65,6 +65,8 @@ public class EmergencyDispatchedJobProcessorTest extends TestWithRedis {
         Assertions.assertEquals(BedroomState.OCCUPIED, emergencyBedroom.getState());
     }
 
+    //------------------------------------------------------------------
+
     private String buildEmergencyDispatchedMessage(UUID hospitalId, UUID emergencyId, UUID patientId) throws IOException {
         return readFile(MOCK_MESSAGE_RESOURCES_PATH + "emergency_dispatched.message")
                 .replace("#HOSPITAL_UUID#", hospitalId.toString())
@@ -72,7 +74,6 @@ public class EmergencyDispatchedJobProcessorTest extends TestWithRedis {
                 .replace("#PATIENT_UUID#", patientId.toString());
     }
 
-    //------------------------------------------------------------------
     private Hospital buildTestHospitalWithEmergencyBedroomsAvailable() {
         Hospital testHospital =  buildTestHospital();
 

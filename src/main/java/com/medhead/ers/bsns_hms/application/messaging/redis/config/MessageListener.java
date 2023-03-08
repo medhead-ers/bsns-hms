@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 @NoArgsConstructor
-@Component
 public class MessageListener {
     @Autowired
     private JobMapper jobMapper;
