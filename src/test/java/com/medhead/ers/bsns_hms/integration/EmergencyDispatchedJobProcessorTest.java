@@ -1,5 +1,6 @@
 package com.medhead.ers.bsns_hms.integration;
 
+import com.medhead.ers.bsns_hms.TestWithRedis;
 import com.medhead.ers.bsns_hms.application.messaging.redis.config.MessageListener;
 import com.medhead.ers.bsns_hms.data.tools.Generator;
 import com.medhead.ers.bsns_hms.domain.entity.EmergencyBedroom;
@@ -15,7 +16,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.test.annotation.DirtiesContext;
@@ -27,10 +27,9 @@ import java.util.UUID;
 
 import static com.medhead.ers.bsns_hms.utils.FileReader.readFile;
 
-@SpringBootTest
 @DirtiesContext
 @ExtendWith(OutputCaptureExtension.class)
-public class EmergencyDispatchedJobProcessorTest {
+public class EmergencyDispatchedJobProcessorTest extends TestWithRedis {
 
     private final static String MOCK_MESSAGE_RESOURCES_PATH = "src/test/resources/mock/message/";
 
