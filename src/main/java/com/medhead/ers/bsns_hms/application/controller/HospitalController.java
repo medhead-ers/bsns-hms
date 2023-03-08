@@ -2,7 +2,6 @@ package com.medhead.ers.bsns_hms.application.controller;
 
 import com.medhead.ers.bsns_hms.domain.entity.EmergencyBedroom;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
-
 import com.medhead.ers.bsns_hms.domain.exception.HospitalCodeAlreadyExistException;
 import com.medhead.ers.bsns_hms.domain.service.definition.HospitalService;
 import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;

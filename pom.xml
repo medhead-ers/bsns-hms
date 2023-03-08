@@ -125,7 +125,7 @@
 							<excludes>
 								<exclude>com/medhead/ers/*/*Application.class</exclude>
 								<!-- Exclude messaging when not used in app to avoid wrong metrics -->
-								<exclude>com/medhead/ers/*/application/messaging/**</exclude>
+								<exclude>com/medhead/ers/*/application/messaging/exception/MessagePublicationFailException.*</exclude>
 								<exclude>com/medhead/ers/*/application/advice/MessagePublicationFailAdvice.*</exclude>
 							</excludes>
 						</configuration>

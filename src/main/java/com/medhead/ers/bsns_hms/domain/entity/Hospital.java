@@ -12,7 +12,10 @@ import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Setter
 @Getter
@@ -43,6 +46,7 @@ public class Hospital {
     private Set<MedicalSpeciality> medicalSpecialities;
     @OneToMany(
             cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER,
             orphanRemoval = true)
     @JsonIgnore
     private List<EmergencyBedroom> emergencyBedrooms = new ArrayList<>();

@@ -1,9 +1,12 @@
 package com.medhead.ers.bsns_hms.units;
 
+import com.medhead.ers.bsns_hms.data.tools.Generator;
+import com.medhead.ers.bsns_hms.domain.NoEmergencyBedroomsAvailableInHospitalException;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
 import com.medhead.ers.bsns_hms.domain.exception.HospitalCodeAlreadyExistException;
 import com.medhead.ers.bsns_hms.domain.service.definition.HospitalService;
 import com.medhead.ers.bsns_hms.domain.valueObject.Address;
+import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;
 import com.medhead.ers.bsns_hms.domain.valueObject.GPSCoordinates;
 import com.medhead.ers.bsns_hms.domain.valueObject.MedicalSpeciality;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -15,6 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.UUID;
 
 @SpringBootTest
 @DirtiesContext
@@ -34,6 +38,18 @@ class HospitalServiceTest {
         });
     }
 
+    @Test
+    void test_bookEmergencyBedroomThrowsNoEmergencyBedroomsAvailableInHospitalException() throws HospitalCodeAlreadyExistException {
+        // Given
+        Hospital hospital= hospitalService.saveHospital(buildTestHospitalWithoutEmergencyBedroomsAvailable());
+        // Then
+        Assertions.assertThrows(NoEmergencyBedroomsAvailableInHospitalException.class, () -> {
+            // When
+            hospitalService.bookEmergencyBedroom(hospital.getId(), UUID.randomUUID(), UUID.randomUUID());
+        });
+    }
+
+
     private Hospital buildTestHospital(String code) {
         return Hospital.builder()
                 .name("Test Hospital")
@@ -52,4 +68,14 @@ class HospitalServiceTest {
                         MedicalSpeciality.CARDIOLOGY)))
                 .build();
     }
+
+    private Hospital buildTestHospitalWithoutEmergencyBedroomsAvailable() {
+        Hospital testHospital =  buildTestHospital(RandomStringUtils.randomAlphanumeric(5).toUpperCase());
+
+        testHospital.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 10, BedroomState.UNAVAILABLE, 1));
+
+        return testHospital;
+    }
+
 }

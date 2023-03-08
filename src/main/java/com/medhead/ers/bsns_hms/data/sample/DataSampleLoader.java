@@ -39,8 +39,51 @@ public class DataSampleLoader {
         londonRoyalHospital.addEmergencyBedrooms(
                 Generator.emergencyBedroomsGenerator(londonRoyalHospital.getCode(), 5, BedroomState.UNAVAILABLE, 20));
 
+        Hospital bartHealthNHSTrust = Hospital.builder()
+                .name("Barts Health NHS Trust")
+                .code("HSNHS")
+                .gpsCoordinates(GPSCoordinates.builder()
+                        .latitude(51.52368647004438)
+                        .longitude(-0.1425965117175789).build())
+                .address(Address.builder()
+                        .numberAndStreetName("A501 Road")
+                        .postCode("E1 EBA")
+                        .city("London")
+                        .country("United Kingdom")
+                        .build())
+                .medicalSpecialities(new HashSet<>(Arrays.asList(
+                        MedicalSpeciality.OPHTHALMOLOGY,
+                        MedicalSpeciality.NEUROPATHOLOGY,
+                        MedicalSpeciality.DIAGNOSTIC)))
+                .build();
+        bartHealthNHSTrust.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(bartHealthNHSTrust.getCode(), 5, BedroomState.AVAILABLE, 1));
+
+        Hospital stThomasHospital = Hospital.builder()
+                .name("St Thomas' Hospital")
+                .code("STTHS")
+                .gpsCoordinates(GPSCoordinates.builder()
+                        .latitude(51.52728944582913)
+                        .longitude(-0.17310874839511742).build())
+                .address(Address.builder()
+                        .numberAndStreetName("Westminster Bridge Road")
+                        .postCode("SE1 7EH")
+                        .city("London")
+                        .country("United Kingdom")
+                        .build())
+                .medicalSpecialities(new HashSet<>(Arrays.asList(
+                        MedicalSpeciality.CARDIOLOGY,
+                        MedicalSpeciality.IMMUNOLOGY,
+                        MedicalSpeciality.OPHTHALMOLOGY)))
+                .build();
+        stThomasHospital.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(stThomasHospital.getCode(), 5, BedroomState.AVAILABLE, 1));
+
+
         return args -> {
             hospitalRepository.save(londonRoyalHospital);
+            hospitalRepository.save(bartHealthNHSTrust);
+            hospitalRepository.save(stThomasHospital);
         };
     }
 
