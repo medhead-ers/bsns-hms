@@ -1,6 +1,5 @@
 package com.medhead.ers.bsns_hms.application.messaging.job;
 
-import com.medhead.ers.bsns_hms.application.messaging.event.Event;
 import com.medhead.ers.bsns_hms.domain.service.definition.HospitalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

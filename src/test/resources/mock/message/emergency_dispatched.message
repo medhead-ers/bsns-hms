@@ -1,0 +1,1 @@
+{"eventType":"EmergencyDispatched","metadata":{"emergencyId":"#EMERGENCY_UUID#","patientId":"#PATIENT_UUID#","hospitalId":"#HOSPITAL_UUID#"}}
