@@ -42,7 +42,12 @@ public class HospitalServiceImpl implements HospitalService {
 
     @Override
     public Hospital getHospitalById(UUID uuid) {
-        return hospitalRepository.findById(uuid).orElseThrow(() -> new HospitalNotFoundException(uuid));
+        return hospitalRepository.findById(uuid).orElseThrow(() -> new HospitalNotFoundException(uuid.toString()));
+    }
+
+    @Override
+    public Hospital getHospitalByCode(String code) {
+        return hospitalRepository.findByCode(code).orElseThrow(() -> new HospitalNotFoundException(code));
     }
 
     @Override

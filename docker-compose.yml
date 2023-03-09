@@ -11,13 +11,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   # App runner
-  bsns_hms:
+  bsns-hms:
     build: ./
     labels:
-      - "traefik.http.routers.bsns_hms.rule=Host(`medhead.localhost`) && PathPrefix(`/hms`)"
-      - "traefik.http.routers.bsns_hms.middlewares=hms-stripprefix"
+      - "traefik.http.routers.bsns-hms.rule=Host(`medhead.localhost`) && PathPrefix(`/hms`)"
+      - "traefik.http.routers.bsns-hms.middlewares=hms-stripprefix"
       - "traefik.http.middlewares.hms-stripprefix.stripprefix.prefixes=/hms"
-      - "traefik.http.services.bsns_hms.loadbalancer.server.port=8080"
+      - "traefik.http.services.bsns-hms.loadbalancer.server.port=8080"
 
   # Redis dependency
   redis:

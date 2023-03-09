@@ -64,7 +64,7 @@ class HospitalControllerTest {
     }
 
     @Test
-    void test_GetOneHospital() throws Exception {
+    void test_GetOneHospitalById() throws Exception {
         // Given
         Hospital hospital = hospitalRepository.save(buildTestHospital());
         UUID hospitalId = hospital.getId();
@@ -72,6 +72,29 @@ class HospitalControllerTest {
         mockMvc.perform(get("/hospitals/" + hospitalId))
                 // Then
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(hospital.getId().toString())))
+                .andExpect(jsonPath("$.name", is(hospital.getName())))
+                .andExpect(jsonPath("$.code", is(hospital.getCode())))
+                .andExpect(jsonPath("$.address.numberAndStreetName", is(hospital.getAddress().getNumberAndStreetName())))
+                .andExpect(jsonPath("$.address.addressComplement", is(hospital.getAddress().getAddressComplement())))
+                .andExpect(jsonPath("$.address.city", is(hospital.getAddress().getCity())))
+                .andExpect(jsonPath("$.address.postCode", is(hospital.getAddress().getPostCode())))
+                .andExpect(jsonPath("$.address.country", is(hospital.getAddress().getCountry())))
+                .andExpect(jsonPath("$.gpsCoordinates.longitude").value(is(hospital.getGpsCoordinates().getLongitude()), Double.class))
+                .andExpect(jsonPath("$.gpsCoordinates.latitude").value(is(hospital.getGpsCoordinates().getLatitude()), Double.class))
+                .andExpect(jsonPath("$.availableEmergencyBedrooms", is(hospital.getAvailableEmergencyBedrooms())));
+    }
+
+    @Test
+    void test_GetOneHospitalByCode() throws Exception {
+        // Given
+        Hospital hospital = hospitalRepository.save(buildTestHospital());
+        String hospitalCode = hospital.getCode();
+        // When
+        mockMvc.perform(get("/hospitals/" + hospitalCode))
+                // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(hospital.getId().toString())))
                 .andExpect(jsonPath("$.name", is(hospital.getName())))
                 .andExpect(jsonPath("$.code", is(hospital.getCode())))
                 .andExpect(jsonPath("$.address.numberAndStreetName", is(hospital.getAddress().getNumberAndStreetName())))
@@ -106,13 +129,25 @@ class HospitalControllerTest {
     }
 
     @Test
-    void test_GetEmergencyBedroomsForHospital() throws Exception {
+    void test_GetEmergencyBedroomsForHospitalById() throws Exception {
         // Given
         Hospital testHospital = hospitalRepository.save(buildTestHospital());
         int totalBedroomsInHospital = (int) testHospital.getEmergencyBedrooms().stream().count();
         // When
         mockMvc.perform(get("/hospitals/"+testHospital.getId()+"/emergency-bedrooms"))
         // Then
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()", is(totalBedroomsInHospital)));
+    }
+
+    @Test
+    void test_GetEmergencyBedroomsForHospitalByCode() throws Exception {
+        // Given
+        Hospital testHospital = hospitalRepository.save(buildTestHospital());
+        int totalBedroomsInHospital = (int) testHospital.getEmergencyBedrooms().stream().count();
+        // When
+        mockMvc.perform(get("/hospitals/"+testHospital.getCode()+"/emergency-bedrooms"))
+                // Then
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()", is(totalBedroomsInHospital)));
     }
