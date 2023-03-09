@@ -13,5 +13,6 @@ public interface HospitalService {
     Hospital saveHospital(Hospital hospital) throws HospitalCodeAlreadyExistException;
     List<Hospital> getAllHospitals();
     Hospital getHospitalById(UUID uuid);
+    Hospital getHospitalByCode(String code);
     EmergencyBedroom bookEmergencyBedroom(UUID hospitalId, UUID emergencyId, UUID patientId) throws NoEmergencyBedroomsAvailableInHospitalException, MessagePublicationFailException;
 }

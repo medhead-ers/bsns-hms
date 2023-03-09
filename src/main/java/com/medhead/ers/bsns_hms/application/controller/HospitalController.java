@@ -25,9 +25,14 @@ public class HospitalController {
         return hospitalService.getAllHospitals();
     }
 
-    @GetMapping("/hospitals/{uuid}")
-    Hospital one(@PathVariable UUID uuid) {
-        return hospitalService.getHospitalById(uuid);
+    @GetMapping("/hospitals/{identifier}")
+    Hospital one(@PathVariable String identifier) {
+        try {
+            return hospitalService.getHospitalById(UUID.fromString(identifier));
+        }
+        catch (IllegalArgumentException e){
+            return hospitalService.getHospitalByCode(identifier);
+        }
     }
 
     @PostMapping("/hospitals")
@@ -36,9 +41,16 @@ public class HospitalController {
         return hospitalService.saveHospital(hospital);
     }
 
-    @GetMapping("/hospitals/{uuid}/emergency-bedrooms")
-    List<EmergencyBedroom>  allEmergencyBedroomsOfHospital(@PathVariable UUID uuid, @RequestParam Optional<String> state) {
-        List<EmergencyBedroom> emergencyBedroomList = hospitalService.getHospitalById(uuid).getEmergencyBedrooms();
+    @GetMapping("/hospitals/{identifier}/emergency-bedrooms")
+    List<EmergencyBedroom>  allEmergencyBedroomsOfHospital(@PathVariable String identifier, @RequestParam Optional<String> state) {
+        Hospital hospital;
+        try {
+            hospital = hospitalService.getHospitalById(UUID.fromString(identifier));
+        }
+        catch (IllegalArgumentException e){
+            hospital = hospitalService.getHospitalByCode(identifier);
+        }
+        List<EmergencyBedroom> emergencyBedroomList = hospital.getEmergencyBedrooms();
         if (state.isPresent() && EnumUtils.isValidEnumIgnoreCase(BedroomState.class, state.get())){
             return emergencyBedroomList.stream().filter(
                     emergencyBedroom -> emergencyBedroom.getState() == BedroomState.valueOf(state.get().toUpperCase())
