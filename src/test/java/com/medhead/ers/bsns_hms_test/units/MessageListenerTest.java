@@ -1,4 +1,4 @@
-package com.medhead.ers.bsns_hms.units;
+package com.medhead.ers.bsns_hms_test.units;
 
 import com.medhead.ers.bsns_hms.application.messaging.exception.CannotProcessJobException;
 import com.medhead.ers.bsns_hms.application.messaging.redis.config.MessageListener;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 @ExtendWith(OutputCaptureExtension.class)
-public class MessageListenerTest {
+class MessageListenerTest {
     private final MessageListener messageListener = new MessageListener(new JobMapperImpl(), new RedisMessageToEventConverter());
 
     @Test

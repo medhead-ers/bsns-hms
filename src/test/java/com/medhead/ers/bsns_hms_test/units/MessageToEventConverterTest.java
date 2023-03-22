@@ -1,4 +1,4 @@
-package com.medhead.ers.bsns_hms.units;
+package com.medhead.ers.bsns_hms_test.units;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -6,7 +6,7 @@ import com.medhead.ers.bsns_hms.application.messaging.service.implementation.Red
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class MessageToEventConverterTest {
+class MessageToEventConverterTest {
     @Test
     void test_failCreateEventFromMessageBecauseInvalidEventType() {
         // Given

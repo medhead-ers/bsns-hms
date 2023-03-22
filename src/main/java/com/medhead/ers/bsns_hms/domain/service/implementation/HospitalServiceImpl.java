@@ -4,7 +4,7 @@ import com.medhead.ers.bsns_hms.application.messaging.exception.MessagePublicati
 import com.medhead.ers.bsns_hms.application.messaging.message.factory.MessageFactory;
 import com.medhead.ers.bsns_hms.application.messaging.service.definition.MessagePublisher;
 import com.medhead.ers.bsns_hms.data.repository.HospitalRepository;
-import com.medhead.ers.bsns_hms.domain.NoEmergencyBedroomsAvailableInHospitalException;
+import com.medhead.ers.bsns_hms.domain.exception.NoEmergencyBedroomsAvailableInHospitalException;
 import com.medhead.ers.bsns_hms.domain.entity.EmergencyBedroom;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
 import com.medhead.ers.bsns_hms.domain.exception.HospitalCodeAlreadyExistException;

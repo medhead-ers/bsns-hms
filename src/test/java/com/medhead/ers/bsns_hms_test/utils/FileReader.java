@@ -1,4 +1,4 @@
-package com.medhead.ers.bsns_hms.utils;
+package com.medhead.ers.bsns_hms_test.utils;
 
 import java.io.IOException;
 import java.nio.file.Files;
