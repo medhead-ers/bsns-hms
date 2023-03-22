@@ -1,4 +1,4 @@
-package com.medhead.ers.bsns_hms.units;
+package com.medhead.ers.bsns_hms_test.units;
 
 import com.medhead.ers.bsns_hms.domain.entity.EmergencyBedroom;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;

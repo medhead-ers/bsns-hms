@@ -1,7 +1,8 @@
-package com.medhead.ers.bsns_hms.units;
+package com.medhead.ers.bsns_hms_test.units;
 
-import com.medhead.ers.bsns_hms.data.tools.Generator;
-import com.medhead.ers.bsns_hms.domain.NoEmergencyBedroomsAvailableInHospitalException;
+import com.medhead.ers.bsns_hms.BsnsHmsApplication;
+import com.medhead.ers.bsns_hms.utils.tools.Generator;
+import com.medhead.ers.bsns_hms.domain.exception.NoEmergencyBedroomsAvailableInHospitalException;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
 import com.medhead.ers.bsns_hms.domain.exception.HospitalCodeAlreadyExistException;
 import com.medhead.ers.bsns_hms.domain.service.definition.HospitalService;
@@ -20,7 +21,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.UUID;
 
-@SpringBootTest
+@SpringBootTest(classes = BsnsHmsApplication.class)
 @DirtiesContext
 class HospitalServiceTest {
     @Autowired

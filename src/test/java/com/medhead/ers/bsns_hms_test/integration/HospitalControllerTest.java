@@ -1,8 +1,9 @@
-package com.medhead.ers.bsns_hms.integration;
+package com.medhead.ers.bsns_hms_test.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.medhead.ers.bsns_hms.BsnsHmsApplication;
 import com.medhead.ers.bsns_hms.data.repository.HospitalRepository;
-import com.medhead.ers.bsns_hms.data.tools.Generator;
+import com.medhead.ers.bsns_hms.utils.tools.Generator;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
 import com.medhead.ers.bsns_hms.domain.valueObject.Address;
 import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;
@@ -29,7 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
+@SpringBootTest(classes = BsnsHmsApplication.class)
 @AutoConfigureMockMvc
 @DirtiesContext
 class HospitalControllerTest {

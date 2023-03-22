@@ -1,7 +1,7 @@
-package com.medhead.ers.bsns_hms.data.sample;
+package com.medhead.ers.bsns_hms.utils.sample;
 
 import com.medhead.ers.bsns_hms.data.repository.HospitalRepository;
-import com.medhead.ers.bsns_hms.data.tools.Generator;
+import com.medhead.ers.bsns_hms.utils.tools.Generator;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
 import com.medhead.ers.bsns_hms.domain.valueObject.Address;
 import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;

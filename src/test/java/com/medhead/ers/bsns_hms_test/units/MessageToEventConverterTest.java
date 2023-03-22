@@ -1,4 +1,4 @@
-package com.medhead.ers.bsns_hms.units;
+package com.medhead.ers.bsns_hms_test.units;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;

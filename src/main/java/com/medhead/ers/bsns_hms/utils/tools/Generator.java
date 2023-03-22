@@ -1,4 +1,4 @@
-package com.medhead.ers.bsns_hms.data.tools;
+package com.medhead.ers.bsns_hms.utils.tools;
 
 import com.medhead.ers.bsns_hms.domain.entity.EmergencyBedroom;
 import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;

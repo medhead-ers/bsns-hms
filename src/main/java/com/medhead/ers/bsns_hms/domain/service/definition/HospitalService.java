@@ -1,7 +1,7 @@
 package com.medhead.ers.bsns_hms.domain.service.definition;
 
 import com.medhead.ers.bsns_hms.application.messaging.exception.MessagePublicationFailException;
-import com.medhead.ers.bsns_hms.domain.NoEmergencyBedroomsAvailableInHospitalException;
+import com.medhead.ers.bsns_hms.domain.exception.NoEmergencyBedroomsAvailableInHospitalException;
 import com.medhead.ers.bsns_hms.domain.entity.EmergencyBedroom;
 import com.medhead.ers.bsns_hms.domain.entity.Hospital;
 import com.medhead.ers.bsns_hms.domain.exception.HospitalCodeAlreadyExistException;
