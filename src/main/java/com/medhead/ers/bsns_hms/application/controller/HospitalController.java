@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class HospitalController {
     @Autowired
     private HospitalService hospitalService;
