@@ -35,9 +35,9 @@ public class DataSampleLoader {
                         MedicalSpeciality.OPHTHALMOLOGY)))
                 .build();
         londonRoyalHospital.addEmergencyBedrooms(
-                Generator.emergencyBedroomsGenerator(londonRoyalHospital.getCode(), 10, BedroomState.AVAILABLE, 1));
+                Generator.emergencyBedroomsGenerator(londonRoyalHospital.getCode(), 10, BedroomState.AVAILABLE, londonRoyalHospital.getTotalEmergencyBedrooms() +1));
         londonRoyalHospital.addEmergencyBedrooms(
-                Generator.emergencyBedroomsGenerator(londonRoyalHospital.getCode(), 5, BedroomState.UNAVAILABLE, 20));
+                Generator.emergencyBedroomsGenerator(londonRoyalHospital.getCode(), 5, BedroomState.UNAVAILABLE, londonRoyalHospital.getTotalEmergencyBedrooms() + 1));
 
         Hospital bartHealthNHSTrust = Hospital.builder()
                 .name("Barts Health NHS Trust")
@@ -57,7 +57,7 @@ public class DataSampleLoader {
                         MedicalSpeciality.DIAGNOSTIC)))
                 .build();
         bartHealthNHSTrust.addEmergencyBedrooms(
-                Generator.emergencyBedroomsGenerator(bartHealthNHSTrust.getCode(), 5, BedroomState.AVAILABLE, 1));
+                Generator.emergencyBedroomsGenerator(bartHealthNHSTrust.getCode(), 5, BedroomState.AVAILABLE, bartHealthNHSTrust.getTotalEmergencyBedrooms() +1));
 
         Hospital stThomasHospital = Hospital.builder()
                 .name("St Thomas' Hospital")
@@ -77,7 +77,7 @@ public class DataSampleLoader {
                         MedicalSpeciality.OPHTHALMOLOGY)))
                 .build();
         stThomasHospital.addEmergencyBedrooms(
-                Generator.emergencyBedroomsGenerator(stThomasHospital.getCode(), 5, BedroomState.AVAILABLE, 1));
+                Generator.emergencyBedroomsGenerator(stThomasHospital.getCode(), 5, BedroomState.AVAILABLE, stThomasHospital.getTotalEmergencyBedrooms() + 1));
 
 
         return args -> {

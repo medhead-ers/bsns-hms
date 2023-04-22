@@ -1,5 +1,5 @@
 package com.medhead.ers.bsns_hms.application.messaging.event;
 
 public enum AvailableEvent {
-    EmergencyDispatched, EmergencyBedroomBooked
+    EmergencyDispatched, EmergencyBedroomBooked, HospitalCreated, EmergencyBedroomsCreated
 }

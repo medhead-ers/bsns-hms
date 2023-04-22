@@ -29,41 +29,48 @@ public class Hospital {
     @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id", columnDefinition = "VARCHAR(36)")
     private UUID id;
+
     @NotEmpty
     private String name;
+
     @NotEmpty
     @Column(unique = true, columnDefinition = "VARCHAR(5)")
     @Pattern(regexp = "^[A-Z0-9]{5}$")
     private String code;
+
     @NotNull
     @Embedded
     private Address address;
+
     @NotNull
     @Embedded
     private GPSCoordinates gpsCoordinates;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private Set<MedicalSpeciality> medicalSpecialities;
+
     @OneToMany(
             cascade = CascadeType.ALL,
             fetch = FetchType.EAGER,
             orphanRemoval = true)
     @JsonIgnore
+    @Builder.Default
     private List<EmergencyBedroom> emergencyBedrooms = new ArrayList<>();
     @Transient
     @Setter(AccessLevel.NONE)
     private int availableEmergencyBedrooms;
 
+    @Transient
+    @Setter(AccessLevel.NONE)
+    private int totalEmergencyBedrooms;
+
 
     public void addEmergencyBedrooms(EmergencyBedroom emergencyBedroom) {
-        if (this.emergencyBedrooms == null)
-            this.emergencyBedrooms = new ArrayList<>();
         this.emergencyBedrooms.add(emergencyBedroom);
     }
 
     public void addEmergencyBedrooms(List<EmergencyBedroom> emergencyBedroomList) {
-        if (this.emergencyBedrooms == null)
-            this.emergencyBedrooms = new ArrayList<>();
         this.emergencyBedrooms.addAll(emergencyBedroomList);
     }
 
@@ -71,5 +78,9 @@ public class Hospital {
         return (int) this.emergencyBedrooms.stream()
                 .filter(emergencyBedroom -> emergencyBedroom.getState().equals(BedroomState.AVAILABLE))
                 .count();
+    }
+
+    public int getTotalEmergencyBedrooms() {
+        return this.emergencyBedrooms.size();
     }
 }
