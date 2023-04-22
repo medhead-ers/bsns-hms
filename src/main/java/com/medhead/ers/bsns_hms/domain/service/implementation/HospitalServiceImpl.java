@@ -11,6 +11,7 @@ import com.medhead.ers.bsns_hms.domain.exception.HospitalCodeAlreadyExistExcepti
 import com.medhead.ers.bsns_hms.domain.exception.HospitalNotFoundException;
 import com.medhead.ers.bsns_hms.domain.service.definition.HospitalService;
 import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;
+import com.medhead.ers.bsns_hms.utils.tools.Generator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -28,10 +29,15 @@ public class HospitalServiceImpl implements HospitalService {
     @Override
     public Hospital saveHospital(Hospital hospital) throws HospitalCodeAlreadyExistException {
         try {
-            return hospitalRepository.save(hospital);
+            hospital =  hospitalRepository.save(hospital);
+            messagePublisher.publish(MessageFactory.createHospitalCreatedMessage(hospital));
+            return hospital;
         }
         catch (DataIntegrityViolationException exception){
             throw new HospitalCodeAlreadyExistException(hospital.getCode());
+        } catch (MessagePublicationFailException e) {
+            // Pour le POC, aucune gestion d'erreur sur la publication de message ne sera implémentée.
+            return hospital;
         }
     }
 
@@ -51,7 +57,21 @@ public class HospitalServiceImpl implements HospitalService {
     }
 
     @Override
-    public EmergencyBedroom bookEmergencyBedroom(UUID hospitalId, UUID emergencyId, UUID patientId) throws NoEmergencyBedroomsAvailableInHospitalException, MessagePublicationFailException {
+    public List<EmergencyBedroom> addEmergencyBedroomsToHospital(Hospital hospital, int quantity) {
+        int startIndex = hospital.getTotalEmergencyBedrooms() + 1;
+        hospital.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(hospital.getCode(), quantity, BedroomState.AVAILABLE, startIndex));
+        hospital = hospitalRepository.save(hospital);
+        try {
+            messagePublisher.publish(MessageFactory.createEmergencyBedroomCreatedMessage(hospital));
+            return hospital.getEmergencyBedrooms();
+        }
+        // Pour le POC, aucune gestion d'erreur sur la publication de message ne sera implémentée.
+        catch (MessagePublicationFailException e){return hospital.getEmergencyBedrooms();}
+    }
+
+    @Override
+    public EmergencyBedroom bookEmergencyBedroom(UUID hospitalId, UUID emergencyId, UUID patientId) throws NoEmergencyBedroomsAvailableInHospitalException {
         Hospital hospital = getHospitalById(hospitalId);
         EmergencyBedroom emergencyBedroom = hospital.getEmergencyBedrooms().stream().filter(
                 eb -> eb.getState() == BedroomState.AVAILABLE
@@ -59,7 +79,11 @@ public class HospitalServiceImpl implements HospitalService {
 
         emergencyBedroom.book(patientId, emergencyId);
         hospitalRepository.save(hospital);
-        messagePublisher.publish(MessageFactory.createEmergencyBedroomBookedMessage(emergencyBedroom));
-        return emergencyBedroom;
+        try {
+            messagePublisher.publish(MessageFactory.createEmergencyBedroomBookedMessage(emergencyBedroom));
+            return emergencyBedroom;
+        }
+        // Pour le POC, aucune gestion d'erreur sur la publication de message ne sera implémentée.
+        catch (MessagePublicationFailException e){return emergencyBedroom;}
     }
 }

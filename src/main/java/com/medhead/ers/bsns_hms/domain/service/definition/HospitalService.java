@@ -14,5 +14,6 @@ public interface HospitalService {
     List<Hospital> getAllHospitals();
     Hospital getHospitalById(UUID uuid);
     Hospital getHospitalByCode(String code);
+    List<EmergencyBedroom> addEmergencyBedroomsToHospital(Hospital hospital, int quantity);
     EmergencyBedroom bookEmergencyBedroom(UUID hospitalId, UUID emergencyId, UUID patientId) throws NoEmergencyBedroomsAvailableInHospitalException, MessagePublicationFailException;
 }

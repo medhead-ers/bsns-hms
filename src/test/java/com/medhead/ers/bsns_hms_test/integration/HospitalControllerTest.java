@@ -42,9 +42,9 @@ class HospitalControllerTest {
     private HospitalRepository hospitalRepository;
 
     @Test
-    void test_createHospital() throws Exception{
+    void test_CreateHospital() throws Exception{
         // Given
-        Hospital hospital = buildTestHospital();
+        Hospital hospital = buildTestHospitalWithEmergencyBedrooms();
 
         // When
         mockMvc.perform(post("/hospitals")
@@ -67,7 +67,7 @@ class HospitalControllerTest {
     @Test
     void test_GetOneHospitalById() throws Exception {
         // Given
-        Hospital hospital = hospitalRepository.save(buildTestHospital());
+        Hospital hospital = hospitalRepository.save(buildTestHospitalWithEmergencyBedrooms());
         UUID hospitalId = hospital.getId();
         // When
         mockMvc.perform(get("/hospitals/" + hospitalId))
@@ -83,13 +83,14 @@ class HospitalControllerTest {
                 .andExpect(jsonPath("$.address.country", is(hospital.getAddress().getCountry())))
                 .andExpect(jsonPath("$.gpsCoordinates.longitude").value(is(hospital.getGpsCoordinates().getLongitude()), Double.class))
                 .andExpect(jsonPath("$.gpsCoordinates.latitude").value(is(hospital.getGpsCoordinates().getLatitude()), Double.class))
-                .andExpect(jsonPath("$.availableEmergencyBedrooms", is(hospital.getAvailableEmergencyBedrooms())));
+                .andExpect(jsonPath("$.availableEmergencyBedrooms", is(hospital.getAvailableEmergencyBedrooms())))
+                .andExpect(jsonPath("$.totalEmergencyBedrooms", is(hospital.getTotalEmergencyBedrooms())));
     }
 
     @Test
     void test_GetOneHospitalByCode() throws Exception {
         // Given
-        Hospital hospital = hospitalRepository.save(buildTestHospital());
+        Hospital hospital = hospitalRepository.save(buildTestHospitalWithEmergencyBedrooms());
         String hospitalCode = hospital.getCode();
         // When
         mockMvc.perform(get("/hospitals/" + hospitalCode))
@@ -105,11 +106,12 @@ class HospitalControllerTest {
                 .andExpect(jsonPath("$.address.country", is(hospital.getAddress().getCountry())))
                 .andExpect(jsonPath("$.gpsCoordinates.longitude").value(is(hospital.getGpsCoordinates().getLongitude()), Double.class))
                 .andExpect(jsonPath("$.gpsCoordinates.latitude").value(is(hospital.getGpsCoordinates().getLatitude()), Double.class))
-                .andExpect(jsonPath("$.availableEmergencyBedrooms", is(hospital.getAvailableEmergencyBedrooms())));
+                .andExpect(jsonPath("$.availableEmergencyBedrooms", is(hospital.getAvailableEmergencyBedrooms())))
+                .andExpect(jsonPath("$.totalEmergencyBedrooms", is(hospital.getTotalEmergencyBedrooms())));
     }
 
     @Test
-    void test_failGetOneHospital () throws Exception {
+    void test_FailGetOneHospital () throws Exception {
         // Given
         UUID hospitalId = UUID.randomUUID();
         // When
@@ -119,7 +121,7 @@ class HospitalControllerTest {
     }
 
     @Test
-    void test_getHospitals() throws Exception {
+    void test_GetHospitals() throws Exception {
         // Given
         int totalHospitalsInRepository = ((int) hospitalRepository.count());
         // When
@@ -132,7 +134,7 @@ class HospitalControllerTest {
     @Test
     void test_GetEmergencyBedroomsForHospitalById() throws Exception {
         // Given
-        Hospital testHospital = hospitalRepository.save(buildTestHospital());
+        Hospital testHospital = hospitalRepository.save(buildTestHospitalWithEmergencyBedrooms());
         int totalBedroomsInHospital = (int) testHospital.getEmergencyBedrooms().stream().count();
         // When
         mockMvc.perform(get("/hospitals/"+testHospital.getId()+"/emergency-bedrooms"))
@@ -141,10 +143,22 @@ class HospitalControllerTest {
                 .andExpect(jsonPath("$.size()", is(totalBedroomsInHospital)));
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {1,5,10,15,20})
+    void test_CreateEmergencyBedroomsForHospital(int qtyToCreate) throws Exception {
+        // Given
+        Hospital testHospital = hospitalRepository.save(buildTestHospitalWithoutEmergencyBedrooms());
+        // When
+        mockMvc.perform(post("/hospitals/"+testHospital.getCode()+"/emergency-bedrooms/"+qtyToCreate))
+                // Then
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.size()", is(qtyToCreate)));
+    }
+
     @Test
     void test_GetEmergencyBedroomsForHospitalByCode() throws Exception {
         // Given
-        Hospital testHospital = hospitalRepository.save(buildTestHospital());
+        Hospital testHospital = hospitalRepository.save(buildTestHospitalWithEmergencyBedrooms());
         int totalBedroomsInHospital = (int) testHospital.getEmergencyBedrooms().stream().count();
         // When
         mockMvc.perform(get("/hospitals/"+testHospital.getCode()+"/emergency-bedrooms"))
@@ -157,7 +171,7 @@ class HospitalControllerTest {
     @ValueSource(strings = {("available"),("occupied"),("unavailable")})
     void test_FilterEmergencyBedroomsForHospital(String bedroomsState) throws Exception {
         // Given
-        Hospital testHospital = hospitalRepository.save(buildTestHospital());
+        Hospital testHospital = hospitalRepository.save(buildTestHospitalWithEmergencyBedrooms());
         int totalBedroomsInState = (int) testHospital.getEmergencyBedrooms().stream().filter(
                 e-> e.getState() == BedroomState.valueOf(bedroomsState.toUpperCase())
         ).count();
@@ -170,8 +184,25 @@ class HospitalControllerTest {
     }
 
     //------------------------------------------------------------------
+    private Hospital buildTestHospitalWithoutEmergencyBedrooms() {
+        return buildTestHospital();
+    }
+
+    private Hospital buildTestHospitalWithEmergencyBedrooms() {
+        Hospital testHospital =  buildTestHospital();
+
+        testHospital.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 10, BedroomState.AVAILABLE, 1));
+        testHospital.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 5, BedroomState.UNAVAILABLE, 20));
+        testHospital.addEmergencyBedrooms(
+                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 4, BedroomState.OCCUPIED, 30));
+
+        return testHospital;
+    }
+
     private Hospital buildTestHospital() {
-        Hospital testHospital =  Hospital.builder()
+        return Hospital.builder()
                 .name("Test Hospital")
                 .code(RandomStringUtils.randomAlphanumeric(5).toUpperCase())
                 .gpsCoordinates(GPSCoordinates.builder()
@@ -188,14 +219,5 @@ class HospitalControllerTest {
                         MedicalSpeciality.CARDIOLOGY,
                         MedicalSpeciality.OPHTHALMOLOGY)))
                 .build();
-
-        testHospital.addEmergencyBedrooms(
-                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 10, BedroomState.AVAILABLE, 1));
-        testHospital.addEmergencyBedrooms(
-                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 5, BedroomState.UNAVAILABLE, 20));
-        testHospital.addEmergencyBedrooms(
-                Generator.emergencyBedroomsGenerator(testHospital.getCode(), 4, BedroomState.OCCUPIED, 30));
-
-        return testHospital;
     }
 }

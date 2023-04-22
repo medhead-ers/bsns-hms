@@ -42,6 +42,19 @@ public class HospitalController {
         return hospitalService.saveHospital(hospital);
     }
 
+    @PostMapping("/hospitals/{identifier}/emergency-bedrooms/{quantity}")
+    @ResponseStatus(HttpStatus.CREATED)
+    List<EmergencyBedroom>  createEmergencyBedrooms(@PathVariable String identifier, @PathVariable Integer quantity) throws HospitalCodeAlreadyExistException {
+        Hospital hospital;
+        try {
+            hospital = hospitalService.getHospitalById(UUID.fromString(identifier));
+        }
+        catch (IllegalArgumentException e){
+            hospital = hospitalService.getHospitalByCode(identifier);
+        }
+        return hospitalService.addEmergencyBedroomsToHospital(hospital, quantity);
+    }
+
     @GetMapping("/hospitals/{identifier}/emergency-bedrooms")
     List<EmergencyBedroom>  allEmergencyBedroomsOfHospital(@PathVariable String identifier, @RequestParam Optional<String> state) {
         Hospital hospital;
