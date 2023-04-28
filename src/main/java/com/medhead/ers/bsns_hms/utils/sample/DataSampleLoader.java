@@ -7,6 +7,7 @@ import com.medhead.ers.bsns_hms.domain.valueObject.Address;
 import com.medhead.ers.bsns_hms.domain.valueObject.BedroomState;
 import com.medhead.ers.bsns_hms.domain.valueObject.GPSCoordinates;
 import com.medhead.ers.bsns_hms.domain.valueObject.MedicalSpeciality;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +17,13 @@ import java.util.HashSet;
 
 @Configuration
 public class DataSampleLoader {
+
+    @Value("#{new Boolean('${application.loadsampledata}')}")
+    private boolean loadSampleData;
+
     @Bean
     CommandLineRunner initDatabase(HospitalRepository hospitalRepository) {
+
         Hospital londonRoyalHospital = Hospital.builder()
                 .name("Hôpital royal de Londres")
                 .code("HLRWR")
@@ -79,13 +85,14 @@ public class DataSampleLoader {
         stThomasHospital.addEmergencyBedrooms(
                 Generator.emergencyBedroomsGenerator(stThomasHospital.getCode(), 5, BedroomState.AVAILABLE, stThomasHospital.getTotalEmergencyBedrooms() + 1));
 
-
-        return args -> {
-            hospitalRepository.save(londonRoyalHospital);
-            hospitalRepository.save(bartHealthNHSTrust);
-            hospitalRepository.save(stThomasHospital);
-        };
+        if(loadSampleData){
+            return args -> {
+                hospitalRepository.save(londonRoyalHospital);
+                hospitalRepository.save(bartHealthNHSTrust);
+                hospitalRepository.save(stThomasHospital);
+            };
+        }
+        return args -> {};
     }
-
-
+    
 }
