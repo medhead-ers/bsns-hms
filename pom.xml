@@ -11,8 +11,8 @@
 
 	<!-- PROPERTIES  -->
 	<properties>
-		<!--À configurer pour chaque micro-services -->
-		<service.version>1.0.0</service.version>
+		<!--À configurer pour chaque micro-service -->
+		<revision>1.0.0</revision>
 		<service.artifactid>bsns_hms</service.artifactid>
 		<service.github.package.url>https://maven.pkg.github.com/medhead-ers/bsns-hms</service.github.package.url>
 
@@ -25,7 +25,7 @@
 	<!-- PROJECT DESCRIPTION-->
 	<groupId>com.medhead.ers</groupId>
 	<artifactId>${service.artifactid}</artifactId>
-	<version>${service.version}}</version>
+	<version>${revision}</version>
 	<name>${service.artifactid}</name>
 
 	<!-- PACKAGE DEPLOYMENT -->
@@ -46,6 +46,10 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -82,6 +86,17 @@
 			<version>1.17.6</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.12.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.tngtech.archunit</groupId>
+			<artifactId>archunit-junit5</artifactId>
+			<version>1.0.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<!-- BUILD -->
@@ -115,6 +130,9 @@
 						<configuration>
 							<excludes>
 								<exclude>com/medhead/ers/*/*Application.class</exclude>
+								<!-- Exclude messaging when not used in app to avoid wrong metrics -->
+								<exclude>com/medhead/ers/*/application/messaging/exception/MessagePublicationFailException.*</exclude>
+								<exclude>com/medhead/ers/*/application/advice/MessagePublicationFailAdvice.*</exclude>
 							</excludes>
 						</configuration>
 						<executions>
@@ -134,6 +152,41 @@
 										<format>XML</format>
 									</formats>
 								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>performanceTest</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.lazerycode.jmeter</groupId>
+						<artifactId>jmeter-maven-plugin</artifactId>
+						<version>3.7.0</version>
+						<executions>
+							<!-- Generate JMeter configuration -->
+							<execution>
+								<id>configuration</id>
+								<goals>
+									<goal>configure</goal>
+								</goals>
+							</execution>
+							<!-- Run JMeter tests -->
+							<execution>
+								<id>jmeter-tests</id>
+								<goals>
+									<goal>jmeter</goal>
+								</goals>
+							</execution>
+							<!-- Fail build on errors in test -->
+							<execution>
+								<id>jmeter-check-results</id>
+								<goals>
+									<goal>results</goal>
+								</goals>
 							</execution>
 						</executions>
 					</plugin>

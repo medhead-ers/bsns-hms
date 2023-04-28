@@ -5,4 +5,5 @@ import com.medhead.ers.bsns_hms.application.messaging.job.Job;
 
 public interface JobMapper {
     Job createJobFromEvent(Event event) throws Exception;
+    boolean checkIfJobExistForEvent(Event event);
 }
